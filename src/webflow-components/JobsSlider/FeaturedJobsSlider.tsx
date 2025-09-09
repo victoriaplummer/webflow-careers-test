@@ -36,7 +36,7 @@ function JobCard({ job, ghSlug }: JobCardProps) {
 
   return (
     <a
-      href={`/careers-portal/jobs/${ghSlug}/${job.id}`}
+      href={`/careers-portal-kv/jobs/${ghSlug}/${job.id}`}
       style={{
         display: "block",
         position: "relative",
@@ -169,7 +169,7 @@ export function FeaturedJobsSlider({
 
         // Fetch all departments from the API
         const response = await fetch(
-          `${domain}/careers-portal/api/greenhouse?ghSlug=${encodeURIComponent(
+          `${domain}/careers-portal-kv/api/greenhouse?ghSlug=${encodeURIComponent(
             ghSlug
           )}`
         );

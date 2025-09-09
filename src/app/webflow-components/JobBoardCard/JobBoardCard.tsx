@@ -22,7 +22,7 @@ export function JobBoardCard({
         </p>
         <div className="card-actions justify-end">
           <a
-            href={`/careers-portal/jobs/${ghSlug}/${id}`}
+            href={`/careers-portal-kv/jobs/${ghSlug}/${id}`}
             className="btn btn-primary btn-sm"
           >
             View Job
