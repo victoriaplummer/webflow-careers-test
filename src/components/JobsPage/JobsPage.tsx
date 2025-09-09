@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import type { GreenhouseDepartment } from "../../lib/greenhouse";
+import { API_ENDPOINTS } from "../../lib/config";
 import { Job } from "../../../devlink/Job";
 import { JobsList } from "../../../devlink/JobsList";
 import { Department } from "../../../devlink/Department";
@@ -9,6 +10,7 @@ import { Department } from "../../../devlink/Department";
 interface JobsPageProps {
   ghSlug?: string;
   className?: string;
+  departments?: GreenhouseDepartment[]; // Server-side rendered data
 }
 
 interface DepartmentsResponse {
@@ -18,24 +20,27 @@ interface DepartmentsResponse {
 export function JobsPage({
   ghSlug = "webflow",
   className = "",
+  departments: initialDepartments = [],
 }: JobsPageProps) {
-  const [departments, setDepartments] = useState<GreenhouseDepartment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [departments, setDepartments] =
+    useState<GreenhouseDepartment[]>(initialDepartments);
+  const [loading, setLoading] = useState(initialDepartments.length === 0);
   const [error, setError] = useState<string | null>(null);
   const [selectedDepartment, setSelectedDepartment] = useState<string>("all");
 
-  // Fetch departments and jobs
+  // Only fetch if no initial data was provided (fallback for client-side only)
   useEffect(() => {
+    if (initialDepartments.length > 0) {
+      setLoading(false);
+      return;
+    }
+
     const fetchDepartments = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(
-          `/careers-portal-kv/api/greenhouse?ghSlug=${encodeURIComponent(
-            ghSlug
-          )}`
-        );
+        const response = await fetch(API_ENDPOINTS.greenhouse(ghSlug));
 
         if (!response.ok) {
           throw new Error("Failed to fetch job listings");
@@ -53,7 +58,7 @@ export function JobsPage({
     };
 
     fetchDepartments();
-  }, [ghSlug]);
+  }, [ghSlug, initialDepartments.length]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDepartment(e.target.value);

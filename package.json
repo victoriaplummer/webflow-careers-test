@@ -11,7 +11,8 @@
     "astro": "astro",
     "cf-typegen": "wrangler types",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "warm-cache": "node scripts/warm-cache.js"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.6",

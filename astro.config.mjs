@@ -19,6 +19,25 @@ export default defineConfig({
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
+    css: {
+      // Optimize CSS loading
+      devSourcemap: false,
+    },
+    build: {
+      // Optimize CSS for production
+      cssCodeSplit: false,
+      rollupOptions: {
+        output: {
+          // Inline critical CSS
+          assetFileNames: (assetInfo) => {
+            if (assetInfo.name?.endsWith(".css")) {
+              return "assets/[name]-[hash][extname]";
+            }
+            return "assets/[name]-[hash][extname]";
+          },
+        },
+      },
+    },
     resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
       // Without this, MessageChannel from node:worker_threads needs to be polyfilled.

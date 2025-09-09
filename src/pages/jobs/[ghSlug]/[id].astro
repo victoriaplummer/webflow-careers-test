@@ -32,10 +32,15 @@ if (!ghSlug || !id) {
 
 // Use cached version if KV is available, otherwise fall back to direct fetch
 let job;
-if (locals.runtime?.env?.JOBS_KV) {
-  job = await fetchGreenhouseJobCached(ghSlug, id, locals.runtime.env.JOBS_KV);
-} else {
-  job = await fetchGreenhouseJob(ghSlug, id);
+try {
+  if (locals.runtime?.env?.JOBS_KV) {
+    job = await fetchGreenhouseJobCached(ghSlug, id, locals.runtime.env.JOBS_KV);
+  } else {
+    job = await fetchGreenhouseJob(ghSlug, id);
+  }
+} catch (error) {
+  console.error('Error fetching job:', error);
+  job = null;
 }
 
 if (!job) {
