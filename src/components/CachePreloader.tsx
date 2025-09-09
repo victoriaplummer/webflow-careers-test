@@ -13,13 +13,13 @@ export function CachePreloader({ ghSlug, jobId }: CachePreloaderProps) {
       try {
         // Preload all jobs for faster navigation
         const allJobsPromise = fetch(
-          `/careers-portal-kv/api/jobs?ghSlug=${encodeURIComponent(ghSlug)}`
+          `/careers-portal/api/jobs?ghSlug=${encodeURIComponent(ghSlug)}`
         );
 
         // If we're on a job page, preload similar jobs
         if (jobId) {
           const questionsPromise = fetch(
-            `/careers-portal-kv/api/questions?ghSlug=${encodeURIComponent(
+            `/careers-portal/api/questions?ghSlug=${encodeURIComponent(
               ghSlug
             )}&jobId=${encodeURIComponent(jobId)}`
           );

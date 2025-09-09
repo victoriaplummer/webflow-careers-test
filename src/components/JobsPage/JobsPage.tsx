@@ -159,7 +159,7 @@ export function JobsPage({
                         title={job.title}
                         location={job.location.name}
                         link={{
-                          href: `/careers-portal-kv/jobs/${ghSlug}/${job.id}`,
+                          href: `/careers-portal/jobs/${ghSlug}/${job.id}`,
                         }}
                       />
                     ))}

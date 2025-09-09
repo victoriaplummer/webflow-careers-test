@@ -11,7 +11,7 @@ export const getApiBaseUrl = (): string => {
 
   // Local development
   if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return "http://localhost:4321/careers-portal-kv";
+    return "http://localhost:4321/careers-portal";
   }
 
   // Webflow Canvas environment
@@ -19,16 +19,16 @@ export const getApiBaseUrl = (): string => {
     hostname.includes("webflow.io") ||
     hostname.includes("canvas.webflow.com")
   ) {
-    return "https://webflow-about-1c3d6c3166e82678aba90676e.webflow.io/careers-portal-kv";
+    return "https://webflow-about-1c3d6c3166e82678aba90676e.webflow.io/careers-portal";
   }
 
   // Production deployment
   if (hostname.includes("webflow-about-1c3d6c3166e82678aba90676e.webflow.io")) {
-    return "https://webflow-about-1c3d6c3166e82678aba90676e.webflow.io/careers-portal-kv";
+    return "https://webflow-about-1c3d6c3166e82678aba90676e.webflow.io/careers-portal";
   }
 
   // Fallback: use current origin
-  return window.location.origin + "/careers-portal-kv";
+  return window.location.origin + "/careers-portal";
 };
 
 export const API_ENDPOINTS = {

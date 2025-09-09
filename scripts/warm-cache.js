@@ -5,8 +5,7 @@
  * This script pre-populates the KV cache to prevent FOUC during development
  */
 
-const BASE_URL =
-  process.env.DEV_URL || "http://localhost:4321/careers-portal-kv";
+const BASE_URL = process.env.DEV_URL || "http://localhost:4321/careers-portal";
 
 async function warmCache() {
   console.log("🔥 Warming cache...");
