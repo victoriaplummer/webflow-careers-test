@@ -1,5 +1,5 @@
 import type { GreenhouseDepartment } from "../lib/greenhouse";
-import { JobBoardCard } from "../app/webflow-components/JobBoardCard/JobBoardCard";
+import { JobBoardCard } from "./JobBoardCard";
 
 // Type declarations for HTML elements
 declare module "react" {
