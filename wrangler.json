@@ -10,5 +10,11 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "JOBS_KV",
+      "id": "099e7c9342f946e59e09886f3afab295"
+    }
+  ]
 }

@@ -2,13 +2,31 @@
 import Layout from '../layouts/Layout.astro';
 import { Section, Container, Block } from '../../devlink/_Builtin/Basic';
 import { JobsPage } from '../components/JobsPage/JobsPage';
+import { fetchDepartmentsCached, fetchDepartments, type GreenhouseDepartment } from '../lib/greenhouse';
+
+// Server-side data fetching to prevent FOUC
+const { ghSlug = "webflow" } = Astro.params;
+const { locals } = Astro;
+
+let departments: GreenhouseDepartment[] = [];
+try {
+  // Use cached version if KV is available, otherwise fall back to direct fetch
+  if (locals.runtime?.env?.JOBS_KV) {
+    departments = await fetchDepartmentsCached(ghSlug, locals.runtime.env.JOBS_KV);
+  } else {
+    departments = await fetchDepartments(ghSlug);
+  }
+} catch (error) {
+  console.error('Error fetching departments:', error);
+  departments = [];
+}
 ---
 
 <Layout> 
     <Section tag="section">
         <Container>
             <Block>
-                <JobsPage client:load />
+                <JobsPage departments={departments} ghSlug={ghSlug} />
             </Block>
         </Container>
     </Section>

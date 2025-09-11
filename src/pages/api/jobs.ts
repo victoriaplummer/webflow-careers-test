@@ -1,12 +1,18 @@
 import type { APIRoute } from "astro";
-import { fetchAllJobs } from "../../lib/greenhouse";
+import { fetchAllJobs, fetchAllJobsCached } from "../../lib/greenhouse";
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
   const { searchParams } = new URL(request.url);
   const ghSlug = searchParams.get("ghSlug") || "webflow";
 
   try {
-    const allJobs = await fetchAllJobs(ghSlug);
+    // Use cached version if KV is available, otherwise fall back to direct fetch
+    let allJobs;
+    if (locals.runtime?.env?.JOBS_KV) {
+      allJobs = await fetchAllJobsCached(ghSlug, locals.runtime.env.JOBS_KV);
+    } else {
+      allJobs = await fetchAllJobs(ghSlug);
+    }
 
     return new Response(
       JSON.stringify({

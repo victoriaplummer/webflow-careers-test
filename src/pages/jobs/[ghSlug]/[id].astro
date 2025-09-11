@@ -9,8 +9,11 @@ import { ReadingProgress } from '../../../components/ReadingProgress';
 import { ThemeToggle } from '../../../components/ThemeToggle';
 import {
   fetchGreenhouseJob,
+  fetchGreenhouseJobCached,
   fetchDepartmentJobs,
+  fetchDepartmentJobsCached,
   fetchAllJobs,
+  fetchAllJobsCached,
   decodeHtmlEntities,
 } from '../../../lib/greenhouse';
 
@@ -20,14 +23,26 @@ export async function getStaticPaths() {
   return [];
 }
 
-const { params } = Astro;
+const { params, locals } = Astro;
 const { ghSlug, id } = await params;
 
 if (!ghSlug || !id) {
   return Astro.redirect('/404');
 }
 
-const job = await fetchGreenhouseJob(ghSlug, id);
+// Use cached version if KV is available, otherwise fall back to direct fetch
+let job;
+try {
+  if (locals.runtime?.env?.JOBS_KV) {
+    job = await fetchGreenhouseJobCached(ghSlug, id, locals.runtime.env.JOBS_KV);
+  } else {
+    job = await fetchGreenhouseJob(ghSlug, id);
+  }
+} catch (error) {
+  console.error('Error fetching job:', error);
+  job = null;
+}
+
 if (!job) {
   return Astro.redirect('/404');
 }
@@ -48,7 +63,13 @@ const firstDepartment = job.departments?.[0];
 let departmentJobs = null;
 if (firstDepartment) {
   try {
-    const allJobs = await fetchAllJobs(ghSlug);
+    // Use cached version if KV is available, otherwise fall back to direct fetch
+    let allJobs;
+    if (locals.runtime?.env?.JOBS_KV) {
+      allJobs = await fetchAllJobsCached(ghSlug, locals.runtime.env.JOBS_KV);
+    } else {
+      allJobs = await fetchAllJobs(ghSlug);
+    }
     const jobsInDepartment = allJobs.filter(jobItem => 
       jobItem.departments?.some(dept => dept.id === firstDepartment.id)
     );
@@ -77,7 +98,7 @@ if (firstDepartment) {
       <!-- Header with Back Link and Theme Toggle -->
       <div class="mb-6 flex items-center justify-between">
         <a
-          href="/careers/roles"
+          href="/careers-portal/roles"
           class="btn btn-ghost btn-sm gap-2 text-base-content/70 hover:text-base-content"
           aria-label="Back to job listings"
         >

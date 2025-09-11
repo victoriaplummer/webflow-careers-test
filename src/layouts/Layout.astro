@@ -2,7 +2,8 @@
 import { DevLinkProvider } from '../../devlink/DevLinkProvider.jsx';
 import { GlobalCustomCode } from '../../devlink';
 import { Navigation } from '../../devlink/Navigation';
-import "../../devlink/global.css"; // Webflow Styles
+import { LoadingIndicator } from '../components/LoadingIndicator';
+import { CachePreloader } from '../components/CachePreloader';
 import "../../src/layouts/globals.css";
 ---
 
@@ -15,8 +16,45 @@ import "../../src/layouts/globals.css";
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-		<meta name="generator" content={Astro.generator} />
+		<meta name="generator" content="Astro" />
 		<title>Webflow Cloud - Astro Starter</title>
+		
+		<!-- Critical CSS to prevent FOUC -->
+		<style>
+			/* Prevent FOUC by setting initial theme immediately */
+			html {
+				visibility: hidden;
+				opacity: 0;
+				transition: opacity 0.1s ease-in-out;
+			}
+			
+			html.theme-loaded {
+				visibility: visible;
+				opacity: 1;
+			}
+			
+			/* Critical base styles to prevent layout shift */
+			body {
+				margin: 0;
+				font-family: 'Inter', system-ui, sans-serif;
+				background-color: #ffffff;
+				color: #374151;
+				transition: background-color 0.3s ease, color 0.3s ease;
+			}
+			
+			/* Dark theme critical styles */
+			html[data-theme="dark"] body {
+				background-color: #111827;
+				color: #f9fafb;
+			}
+			
+			/* Ensure proper font loading */
+			@font-face {
+				font-family: 'Inter';
+				font-display: swap;
+			}
+		</style>
+		
 		<script>
 			// Theme initialization script - runs before any other scripts
 			(function() {
@@ -39,11 +77,20 @@ import "../../src/layouts/globals.css";
 					console.error("❌ Theme initialization error:", e);
 					// Fallback if localStorage is not available
 					document.documentElement.setAttribute('data-theme', 'light');
+					document.documentElement.classList.add('theme-loaded');
 				}
 			})();
+			
 		</script>
+		
+		<!-- Load Webflow styles after critical CSS -->
+		<link rel="stylesheet" href="../../devlink/global.css" media="print" onload="this.media='all'">
+		<noscript><link rel="stylesheet" href="../../devlink/global.css"></noscript>
 	</head>
 	<body class="bg-base-100 text-base-content transition-colors duration-300">
+		<LoadingIndicator client:load />
+		<CachePreloader ghSlug="webflow" client:load />
+		
 		<DevLinkProvider client:load>
 			<slot />
 		</DevLinkProvider>

@@ -1,3 +1,5 @@
+import { KVCache, CacheKeys, CacheTTL } from "./kvCache";
+
 export interface GreenhouseJob {
   id: number;
   title: string;
@@ -98,11 +100,34 @@ export async function fetchGreenhouseJobWithQuestions(
   }
 }
 
+export async function fetchGreenhouseJobWithQuestionsCached(
+  ghSlug: string,
+  jobId: string,
+  kv: KVNamespace
+): Promise<GreenhouseJob | null> {
+  const cache = new KVCache(kv);
+  const cacheKey = CacheKeys.jobWithQuestions(ghSlug, jobId);
+
+  return cache.getOrSet(
+    cacheKey,
+    () => fetchGreenhouseJobWithQuestions(ghSlug, jobId),
+    CacheTTL.JOB_DETAILS
+  );
+}
+
 export async function fetchGreenhouseJob(
   ghSlug: string,
   jobId: string
 ): Promise<GreenhouseJob | null> {
   return fetchGreenhouseJobWithQuestions(ghSlug, jobId);
+}
+
+export async function fetchGreenhouseJobCached(
+  ghSlug: string,
+  jobId: string,
+  kv: KVNamespace
+): Promise<GreenhouseJob | null> {
+  return fetchGreenhouseJobWithQuestionsCached(ghSlug, jobId, kv);
 }
 
 export async function fetchDepartmentJobs(
@@ -129,6 +154,21 @@ export async function fetchDepartmentJobs(
     console.error("Error fetching department jobs from Greenhouse:", error);
     return null;
   }
+}
+
+export async function fetchDepartmentJobsCached(
+  ghSlug: string,
+  departmentId: number,
+  kv: KVNamespace
+): Promise<GreenhouseDepartment | null> {
+  const cache = new KVCache(kv);
+  const cacheKey = CacheKeys.departmentJobs(ghSlug, departmentId);
+
+  return cache.getOrSet(
+    cacheKey,
+    () => fetchDepartmentJobs(ghSlug, departmentId),
+    CacheTTL.DEPARTMENT_JOBS
+  );
 }
 
 export async function fetchAllJobs(ghSlug: string): Promise<GreenhouseJob[]> {
@@ -178,6 +218,60 @@ export async function fetchAllJobs(ghSlug: string): Promise<GreenhouseJob[]> {
     console.error("Error fetching all jobs from Greenhouse:", error);
     return [];
   }
+}
+
+export async function fetchAllJobsCached(
+  ghSlug: string,
+  kv: KVNamespace
+): Promise<GreenhouseJob[]> {
+  const cache = new KVCache(kv);
+  const cacheKey = CacheKeys.allJobs(ghSlug);
+
+  return cache.getOrSet(
+    cacheKey,
+    () => fetchAllJobs(ghSlug),
+    CacheTTL.ALL_JOBS
+  );
+}
+
+export async function fetchDepartments(
+  ghSlug: string
+): Promise<GreenhouseDepartment[]> {
+  try {
+    const departmentsUrl = `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(
+      ghSlug
+    )}/departments/`;
+
+    const departmentsResponse = await fetch(departmentsUrl);
+    if (!departmentsResponse.ok) {
+      console.error(
+        `Greenhouse API error: ${departmentsResponse.status} ${departmentsResponse.statusText}`
+      );
+      return [];
+    }
+
+    const departmentsData = (await departmentsResponse.json()) as {
+      departments: any[];
+    };
+    return departmentsData.departments || [];
+  } catch (error) {
+    console.error("Error fetching departments from Greenhouse:", error);
+    return [];
+  }
+}
+
+export async function fetchDepartmentsCached(
+  ghSlug: string,
+  kv: KVNamespace
+): Promise<GreenhouseDepartment[]> {
+  const cache = new KVCache(kv);
+  const cacheKey = CacheKeys.departments(ghSlug);
+
+  return cache.getOrSet(
+    cacheKey,
+    () => fetchDepartments(ghSlug),
+    CacheTTL.DEPARTMENTS
+  );
 }
 
 export function decodeHtmlEntities(text: string): string {
