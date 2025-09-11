@@ -134,7 +134,7 @@ export class CacheWarmer {
     for (const key of keys.keys) {
       const keyPrefix = key.name.split(":")[0];
       keysByPrefix[keyPrefix] = (keysByPrefix[keyPrefix] || 0) + 1;
-      estimatedSize += key.name.length + (key.metadata?.size || 0);
+      estimatedSize += key.name.length + ((key.metadata as any)?.size || 0);
     }
 
     return {
@@ -153,4 +153,3 @@ export class CacheWarmer {
     console.log(`✅ Cache cleared for ${ghSlug}`);
   }
 }
-

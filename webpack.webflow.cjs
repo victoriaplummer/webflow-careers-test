@@ -103,23 +103,20 @@ module.exports = {
       return updatedRules;
     },
   },
-  externals:
-    process.env.NODE_ENV === "webflow"
-      ? {}
-      : {
-          react: {
-            commonjs: "react",
-            commonjs2: "react",
-            amd: "react",
-            root: "React",
-          },
-          "react-dom": {
-            commonjs: "react-dom",
-            commonjs2: "react-dom",
-            amd: "react-dom",
-            root: "ReactDOM",
-          },
-        },
+  externals: {
+    react: {
+      commonjs: "react",
+      commonjs2: "react",
+      amd: "react",
+      root: "React",
+    },
+    "react-dom": {
+      commonjs: "react-dom",
+      commonjs2: "react-dom",
+      amd: "react-dom",
+      root: "ReactDOM",
+    },
+  },
   optimization: {
     minimize: true,
     usedExports: true,

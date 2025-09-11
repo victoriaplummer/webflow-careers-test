@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { KVCache, CacheKeys } from "../../../lib/kvCache";
+import type { InvalidateCacheRequestBody } from "../../../lib/api";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -13,7 +14,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as InvalidateCacheRequestBody;
     const { type, ghSlug, jobId, departmentId } = body;
 
     const cache = new KVCache(locals.runtime.env.JOBS_KV);
@@ -38,7 +39,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
       case "departmentJobs":
         if (ghSlug && departmentId) {
-          await cache.delete(CacheKeys.departmentJobs(ghSlug, departmentId));
+          await cache.delete(
+            CacheKeys.departmentJobs(ghSlug, Number(departmentId))
+          );
         }
         break;
 

@@ -31,7 +31,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
           }
         );
       }
-      const data = await res.json();
+      const data = (await res.json()) as { departments?: any[] };
       departments = data.departments || [];
     }
 

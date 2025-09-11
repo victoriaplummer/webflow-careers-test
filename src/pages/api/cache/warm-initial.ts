@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { CacheWarmer } from "../../../lib/cacheWarmer";
+import type { WarmCacheRequestBody } from "../../../lib/api";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -13,8 +14,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const body = await request.json();
-    const { ghSlug = "webflow" } = body;
+    const body = (await request.json()) as WarmCacheRequestBody;
+    const {
+      ghSlug = "webflow",
+      includeJobDetails = false,
+      maxJobs = 50,
+      type = "all",
+    } = body;
 
     const warmer = new CacheWarmer(locals.runtime.env.JOBS_KV);
 

@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { CacheWarmer } from "../../../lib/cacheWarmer";
+import type { WarmCacheRequestBody } from "../../../lib/api";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -13,7 +14,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as WarmCacheRequestBody;
     const {
       ghSlug = "webflow",
       includeJobDetails = false,
@@ -103,7 +104,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",
-        details: error.message,
+        details: error instanceof Error ? error.message : String(error),
       }),
       {
         status: 500,
