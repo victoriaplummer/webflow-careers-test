@@ -8,6 +8,9 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   base: "/careers-portal",
+  build: {
+    assetsPrefix: "/careers-portal",
+  },
   output: "server",
   security: { checkOrigin: false },
   adapter: cloudflare({
