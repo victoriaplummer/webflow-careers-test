@@ -5,6 +5,7 @@ import { Navigation } from '../../devlink/Navigation';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import { CachePreloader } from '../components/CachePreloader';
 import "./globals.css";
+import "../../devlink/global.css";
 ---
 
 <!doctype html>
@@ -83,9 +84,7 @@ import "./globals.css";
 			
 		</script>
 		
-		<!-- Load Webflow styles after critical CSS -->
-		<link rel="stylesheet" href="../../devlink/global.css" media="print" onload="this.media='all'">
-		<noscript><link rel="stylesheet" href="../../devlink/global.css"></noscript>
+		<!-- Webflow styles are now imported via Astro's CSS pipeline -->
 	</head>
 	<body class="bg-base-100 text-base-content transition-colors duration-300">
 		<LoadingIndicator client:load />

@@ -4,7 +4,7 @@ import "../../../devlink/global.css";
 import "../../../devlink/Department.module.css";
 import "../../../devlink/JobsList.module.css";
 import "../../../devlink/Job.module.css";
-import "../../../src/layouts/globals.css";
+import "../../layouts/globals.css";
 
 export default declareComponent(JobsPage, {
   name: "Job Listings",

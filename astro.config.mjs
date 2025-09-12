@@ -8,9 +8,6 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   base: "/careers-portal",
-  build: {
-    assetsPrefix: "/careers-portal",
-  },
   output: "server",
   security: { checkOrigin: false },
   adapter: cloudflare({
@@ -25,21 +22,6 @@ export default defineConfig({
     css: {
       // Optimize CSS loading
       devSourcemap: false,
-    },
-    build: {
-      // Optimize CSS for production
-      cssCodeSplit: false,
-      rollupOptions: {
-        output: {
-          // Inline critical CSS
-          assetFileNames: (assetInfo) => {
-            if (assetInfo.name?.endsWith(".css")) {
-              return "assets/[name]-[hash][extname]";
-            }
-            return "assets/[name]-[hash][extname]";
-          },
-        },
-      },
     },
     resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.

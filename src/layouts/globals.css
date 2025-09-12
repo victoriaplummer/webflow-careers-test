@@ -133,3 +133,39 @@ h6 {
   --fallback-er: #ef4444 !important;
   --fallback-erc: #ffffff !important;
 }
+
+/* Override DevLink generated styles for dark mode compatibility */
+[data-theme="dark"] [class*="roles-team"][class*="cc-header"] {
+  background-color: var(--fallback-b1) !important;
+  border-bottom-color: var(--fallback-bc) !important;
+}
+
+[data-theme="dark"] [class*="roles-team"] {
+  border-top-color: var(--fallback-bc) !important;
+}
+
+[data-theme="dark"] [class*="roles-team_role-title"] {
+  color: var(--fallback-bc) !important;
+}
+
+[data-theme="dark"] [class*="jobs-dept_section"] {
+  border-bottom-color: var(--fallback-bc) !important;
+}
+
+/* Light mode overrides (in case DevLink styles are too specific) */
+[data-theme="light"] [class*="roles-team"][class*="cc-header"] {
+  background-color: var(--fallback-b1) !important;
+  border-bottom-color: var(--fallback-bc) !important;
+}
+
+[data-theme="light"] [class*="roles-team"] {
+  border-top-color: var(--fallback-bc) !important;
+}
+
+[data-theme="light"] [class*="roles-team_role-title"] {
+  color: var(--fallback-bc) !important;
+}
+
+[data-theme="light"] [class*="jobs-dept_section"] {
+  border-bottom-color: var(--fallback-bc) !important;
+}
